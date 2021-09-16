@@ -45,7 +45,7 @@
                                 <ul class="navbar-nav ms-auto me-lg-5">
                                     
                                 </ul>
-                                <a class="btn fw-500 ms-lg-4 btn-primary" target="_blank" href="https://web.susi.digital">
+                                <a class="btn fw-500 ms-lg-4 btn-primary open-app" data-platform="Web-App" target="_blank" href="https://web.susi.digital">
                                     Web-App öffnen
                                     <i class="ms-2" data-feather="arrow-right"></i>
                                 </a>
@@ -61,9 +61,9 @@
                                         <h1 class="page-header-ui-title">Organisiere den Schulalltag für deinen Erfolg</h1>
                                         <p class="page-header-ui-text mb-5">Schulplaner. Stundenplan. Hausaufgabenheft. Chat. Dateiablage.</p>
                                         <div class="mb-5 mb-lg-0">
-                                            <a class="me-3" href="https://apps.apple.com/de/app/susi/id1561545859?l=de"><img src="assets/img/app-badges/app-store-badge.svg" class="mb-3" style="height: 3rem" /></a>
-                                            <a class="me-3" href="https://play.google.com/store/apps/details?id=digital.susi&gl=DE"><img src="assets/img/app-badges/google-play-badge.svg" class="mb-3" style="height: 3rem" /></a>
-                                            <a href="https://web.susi.digital"><img src="assets/img/app-badges/web-badge.png"  style="height: 3rem; border-radius: 0.5rem; border: 1px #a6a6a6 solid;"  class="mb-3" /></a>
+                                            <a class="me-3 open-app" data-platform="iOS" href="https://apps.apple.com/de/app/susi/id1561545859?l=de"><img src="assets/img/app-badges/app-store-badge.svg" class="mb-3" style="height: 3rem" /></a>
+                                            <a class="me-3 open-app" data-platform="Android" href="https://play.google.com/store/apps/details?id=digital.susi&gl=DE"><img src="assets/img/app-badges/google-play-badge.svg" class="mb-3" style="height: 3rem" /></a>
+                                            <a href="https://web.susi.digital" class="open-app" data-platform="Web-App"><img src="assets/img/app-badges/web-badge.png"  style="height: 3rem; border-radius: 0.5rem; border: 1px #a6a6a6 solid;"  class="mb-3" /></a>
                                             <div class="page-header-ui-text mt-2 text-xs font-italic"></div>
                                         </div>
                                     </div>
@@ -284,7 +284,7 @@
                             <div class="text-center">
                                 <h2 class="mb-1 mt-5">SuSi ist auch als Web-App verfügbar</h2>
                                 <div class="mb-4">Gut geeignet für die Nutzung auf dem Desktop</div>
-                                <a class="btn fw-500 ms-lg-4 btn-primary btn-lg" target="_blank" href="https://web.susi.digital">
+                                <a class="btn fw-500 ms-lg-4 btn-primary btn-lg open-app" data-platform="Web-App" target="_blank" href="https://web.susi.digital">
                                     Web-App öffnen
                                 </a>
                             </div>
@@ -312,9 +312,9 @@
                                     <p class="lead mb-5 mb-lg-0">Bist du bereit deinen Schulalltag zu organisieren? Lade die App herunter oder öffne die Web-App</p>
                                 </div>
                                 <div class="col-lg-6 text-lg-end pt-1">
-                                    <a href="https://apps.apple.com/de/app/susi/id1561545859?l=de"><img src="assets/img/app-badges/app-store-badge.svg"  class="mb-1" style="height: 3rem" /></a>
-                                    <a href="https://play.google.com/store/apps/details?id=digital.susi&gl=DE"><img src="assets/img/app-badges/google-play-badge.svg"  class="mb-1" style="height: 3rem" /></a>
-                                    <a href="https://web.susi.digital"><img src="assets/img/app-badges/web-badge.png"  style="height: 3rem; border-radius: 0.5rem; border: 1px #a6a6a6 solid;"  class="mb-1" /></a>
+                                    <a href="https://apps.apple.com/de/app/susi/id1561545859?l=de" class="open-app" data-platform="iOS"><img src="assets/img/app-badges/app-store-badge.svg"  class="mb-1" style="height: 3rem" /></a>
+                                    <a href="https://play.google.com/store/apps/details?id=digital.susi&gl=DE"  class="open-app" data-platform="Android"><img src="assets/img/app-badges/google-play-badge.svg"  class="mb-1" style="height: 3rem" /></a>
+                                    <a href="https://web.susi.digital" class="open-app" data-platform="Web-App"><img src="assets/img/app-badges/web-badge.png"  style="height: 3rem; border-radius: 0.5rem; border: 1px #a6a6a6 solid;"  class="mb-1" /></a>
                                 </div>
                             </div>
                         </div>
@@ -385,6 +385,7 @@ var $tracking_id = "G-E7NX9V30GL";
 // If set to false, values from window.location.hostname and window.location.pathname will be used
 var $tracking_cookie_domain = false; // eg. ".example.com"
 var $tracking_cookie_path = false;   // eg. "/"
+
 
 window.cookieconsent.initialise({
     "palette": {
@@ -472,11 +473,44 @@ function embedTrackingCode(){
 
     // track pageview
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    var gtag = function(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', $tracking_id, { 'anonymize_ip': true }); 
     
     //console.log('Google Analytics Tracking enabled')
+
+    // Track Call-to-Action
+    var callToActionElements = document.getElementsByClassName("open-app");
+    for (let i = 0; i < callToActionElements.length; i++) {
+        let element = callToActionElements[i];
+        element.addEventListener("click", function(e){
+            e.preventDefault();
+        
+            let platform = element.getAttribute("data-platform");
+            let href = element.getAttribute("href");
+
+            if(platform == "undefined" || platform === null) return;
+
+            // Creates a timeout to call `submitForm` after one second.
+            setTimeout(redirect, 1000);
+
+            var redirected = false;
+
+            function redirect() {
+                if (!redirected) {
+                    redirected = true;
+                    document.location = href;
+                }
+            }
+
+            gtag('send', 'event', 'engagement', 'Open App', platform, {
+                //'transport': 'beacon',
+                'hitCallback': function(){
+                    redirect();
+                }
+            })
+        });
+    } 
 }
 
 

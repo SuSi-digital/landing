@@ -499,16 +499,19 @@ function embedTrackingCode(){
             function redirect() {
                 if (!redirected) {
                     redirected = true;
-                    document.location = href;
+                    //document.location = href;
                 }
             }
+			
+			gtag('event', 'open_app', {
+				'event_category' : 'engagement',
+				'event_label' : platform,
+				'event_callback': function(){
+					redirect();
+				}
+				
+            });
 
-            gtag('send', 'event', 'engagement', 'Open App', platform, {
-                //'transport': 'beacon',
-                'hitCallback': function(){
-                    redirect();
-                }
-            })
         });
     } 
 }
